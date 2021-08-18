@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>DropDown.qml</file>
+        <file>ItemComboBox.qml</file>
+    </qresource>
+</RCC>
