@@ -11,6 +11,10 @@ Rectangle{
     property bool amIStar: false
     signal newDropDownSignal()
 
+    function switchState(){
+        container.visible = !container.visible
+    }
+
     height: container.visible ? columns.height + 5 : 30
     anchors { left: parent.left; right: parent.right }
     color: "#53d769"
@@ -41,8 +45,6 @@ Rectangle{
                 onClicked: amIStar = !amIStar
                 style: ButtonStyle {
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 25
                         border.width: slide.activeFocus ? 2 : 1
                         border.color: "black"
                         color: 'white'
@@ -61,11 +63,9 @@ Rectangle{
                 height: 30
                 anchors.left: butt.right
                 anchors.leftMargin: 5
-                onClicked: container.visible = !container.visible
+                onClicked: switchState()
                 style: ButtonStyle {
                     background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 25
                         border.width: slide.activeFocus ? 2 : 1
                         border.color: "black"
                         color: 'white'

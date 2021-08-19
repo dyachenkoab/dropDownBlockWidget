@@ -11,9 +11,26 @@ Window {
     property int i: 0
 
     function newDropDown() {
-        var imgObj = Qt.createComponent("DropDown.qml");
-        if (imgObj.status === Component.Ready){
-            var k = imgObj.createObject(curr, {text: '123', myId: i++, source: "ItemComboBox.qml"})
+        var imgObj = Qt.createComponent( "DropDown.qml" );
+        if ( imgObj.status === Component.Ready ){
+            var k = imgObj.createObject( curr, {text: '123', myId: i++, source: "ItemComboBox.qml"} )
+        }
+    }
+
+    function acceptToAll( command ){
+        for( var g = curr.children.length-1; g >= 0; g-- ){
+            if( curr.children[g].amIStar ){
+                switch ( command ){
+                case 'destroy':
+                    curr.children[g].destroy()
+                    break
+                case 'switchState':
+                    curr.children[g].switchState()
+                    break
+                default:
+                    console.log( 'wrong command' )
+                }
+            }
         }
     }
 
@@ -34,8 +51,6 @@ Window {
             text: 'a'
             style: ButtonStyle {
                 background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 25
                     border.width: add.activeFocus ? 2 : 1
                     border.color: "black"
                     color: 'white'
@@ -58,12 +73,7 @@ Window {
             anchors.leftMargin: 5
             text: 'r'
             onClicked: {
-                for(var g = curr.children.length-1; g >= 0; g--){
-                        console.log(curr.children[g])
-                    if( curr.children[g].amIStar ){
-                        curr.children[g].destroy()
-                    }
-                }
+                acceptToAll('destroy')
             }
         }
 
@@ -75,11 +85,7 @@ Window {
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: 5
             text: 'h'
-            MouseArea{
-                anchors.fill: parent
-                onClicked: {
-                }
-            }
+            onClicked: acceptToAll('switchState')
         }
     }
 
