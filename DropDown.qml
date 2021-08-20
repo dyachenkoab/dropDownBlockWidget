@@ -5,8 +5,6 @@ import QtQuick.Controls.Styles 1.4
 
 Rectangle{
     property alias text: textItem.text
-    property alias loader: loader
-    property alias source: loader.source
     property int myId
     property bool amIStar: false
     signal newDropDownSignal()
@@ -84,11 +82,26 @@ Rectangle{
             visible: false
             color: Qt.darker("#53d769", 1.2)
             anchors { left: parent.left; right: parent.right; margins: 5}
-            height: loader.height + 10
-            Loader{
-                y: 5
-                anchors { left: parent.left; right: parent.right; margins: 5}
-                id: loader
+            height: consoleItem.height + 10
+            Item {
+                id: consoleItem
+                width: parent.width
+                height: 150
+                visible: true
+
+//			    Timer {
+//			        id: timer
+//			        interval: 1000
+//			        running: true
+//			        repeat: true
+//			        onTriggered: time.text = Date().toString()
+//			    }
+
+                Text {
+                    id: time
+                    anchors.centerIn: parent
+                }
+
             }
         }
 

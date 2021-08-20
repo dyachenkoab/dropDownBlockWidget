@@ -1,25 +1,33 @@
 #include "model.h"
+#include <QDebug>
 
-Model::Model( QObject *parent ) : QStandardItemModel( parent )
+Model::Model( QObject *parent ) : QAbstractListModel( parent )
 {
-    for ( int row = 0; row < 5; ++row ) {
-        QStandardItem *item = new QStandardItem( QString( "row %0" ).arg( row ) );
-        this->insertRow( row, item );
-    }
+}
+
+void Model::addData(const BigData &data)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    mData << data;
+    endInsertRows();
 }
 
 QVariant Model::data( const QModelIndex &index, int role ) const
 {
+    if ( index.row() < 0 || index.row() >= mData.count() )
+        return QVariant();
 
-    // Определяем номер колонки, адрес так сказать, по номеру роли
-    int columnId = role - Qt::UserRole - 1;
-    // Создаём индекс с помощью новоиспечённого ID колонки
-    QModelIndex modelIndex = this->index( index.row(), columnId );
-
-    /* И с помощью уже метода data() базового класса
-     * вытаскиваем данные для таблицы из модели
-     * */
-    return QStandardItemModel::data( modelIndex, Qt::DisplayRole );
+    const BigData &data = mData[index.row()];
+    switch ( role ) {
+        case CurrentTimeRole:
+            return data.currT();
+            break;
+        case ElapsedTimeRole:
+            return data.elapsT();
+            break;
+        default:
+            return QVariant();
+    }
 }
 
 QHash<int, QByteArray> Model::roleNames() const
@@ -31,4 +39,9 @@ QHash<int, QByteArray> Model::roleNames() const
     roles[CurrentTimeRole] = "currentTime";
     roles[ElapsedTimeRole] = "elapsedTime";
     return roles;
+}
+
+int Model::rowCount(const QModelIndex & parent) const {
+    Q_UNUSED(parent);
+    return mData.count();
 }

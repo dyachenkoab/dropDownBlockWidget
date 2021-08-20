@@ -108,5 +108,18 @@ Window {
 //          }
         }
     }
+    Item {
+        anchors.top: rect.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+       ListView {
+            anchors.fill: parent
+            model: myModel
+            delegate: DropDown {
+                text: "Animal: " + elapsedTime + ' ' + currentTime
+            }
+        }
+    }
 
 }
