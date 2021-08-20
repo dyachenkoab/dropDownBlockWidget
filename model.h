@@ -1,28 +1,33 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <QDebug>
+#include <QElapsedTimer>
 #include <QObject>
 #include <QStandardItemModel>
+#include <QTime>
+#include <QTimer>
 
 struct BigData {
-    QString currentTime;
-    QString elapsedTime;
-    bool amIStar;
+    QElapsedTimer timer;
+    QTime m_elapsedTime;
+    QTime m_currentTime;
+    bool m_amIStar;
 
-    BigData( const QString &_currentTime, const QString &_elapsedTime, const bool _amIStar = false )
+    BigData( const bool _amIStar = false )
     {
-        currentTime = _currentTime;
-        elapsedTime = _elapsedTime;
-        amIStar = _amIStar;
+        m_elapsedTime = QTime::fromString( "00:00:00" );
+        m_amIStar = _amIStar;
+        timer.start();
     }
     ~BigData() = default;
-    QString currT() const
+    QString getElapsedTime() const
     {
-        return currentTime;
+        return m_elapsedTime.toString();
     }
-    QString elapsT() const
+    QString getCurrentTime() const
     {
-        return elapsedTime;
+        return m_currentTime.toString();
     }
 };
 
@@ -31,20 +36,30 @@ class Model : public QAbstractListModel
     Q_OBJECT
 
     QList<BigData> mData;
+    QTimer *tm;
 
-    enum Roles { ElapsedTimeRole = Qt::UserRole + 1, CurrentTimeRole };
+    enum Roles { CurrentTimeRole = Qt::UserRole + 1, ElapsedTimeRole };
 
 public:
     explicit Model( QObject *parent = nullptr );
-    ~Model() = default;
-    QHash<int, QByteArray> roleNames() const;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex()  ) const;
-
-    void addData(const BigData &data);
-    void star();
+    ~Model()
+    {
+        delete tm;
+    };
+    QHash<int, QByteArray> roleNames() const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    bool removeRows( int row, int count = 1, const QModelIndex &parent = QModelIndex() ) override;
 
 signals:
+
+public slots:
+    void addData();
+    void changeData( const int &_index );
+    bool changeStar( const int &_index );
+    bool getAmIStar( const int &_index );
+    void tic_tac();
+    void removeStarredData();
 };
 
 #endif // MODEL_H

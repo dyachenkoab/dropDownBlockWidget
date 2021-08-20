@@ -10,9 +10,9 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     Model m;
-    m.addData(BigData("12", "123"));
-    m.addData(BigData("14", "145"));
-    m.addData(BigData("16", "167"));
+    m.addData();
+    m.addData();
+    m.addData();
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

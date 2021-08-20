@@ -1,13 +1,11 @@
 import QtQuick 2.0
-//import QtQuick.Controls 2.14
 import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.4
 
 Rectangle{
     property alias text: textItem.text
-    property int myId
-    property bool amIStar: false
-    signal newDropDownSignal()
+    property alias time: time.text
+    property bool amIStar: myModel.getAmIStar(index)
 
     function switchState(){
         container.visible = !container.visible
@@ -40,16 +38,17 @@ Rectangle{
                 height: 30
                 anchors.left: textItem.right
                 anchors.leftMargin: 5
-                onClicked: amIStar = !amIStar
+                onClicked: {
+                    amIStar = myModel.changeStar(index)
+                }
                 style: ButtonStyle {
                     background: Rectangle {
                         border.width: slide.activeFocus ? 2 : 1
                         border.color: "black"
-                        color: 'white'
                         radius: 4
                         gradient: Gradient {
                             GradientStop { position: 0 ; color: amIStar ? "red" : "yellow"; }
-                            GradientStop { position: 1 ; color: amIStar ? "yellow" : "red" }
+                            GradientStop { position: 1 ; color: amIStar ? "red" : "yellow"; }
                         }
                     }
                 }
@@ -66,7 +65,6 @@ Rectangle{
                     background: Rectangle {
                         border.width: slide.activeFocus ? 2 : 1
                         border.color: "black"
-                        color: 'white'
                         radius: 4
                         gradient: Gradient {
                             GradientStop { position: 0 ; color: slide.pressed ? "white" : "black"; }
@@ -75,8 +73,8 @@ Rectangle{
                     }
                 }
             }
-
         }
+
         Rectangle{
             id: container
             visible: false
@@ -88,14 +86,6 @@ Rectangle{
                 width: parent.width
                 height: 150
                 visible: true
-
-//			    Timer {
-//			        id: timer
-//			        interval: 1000
-//			        running: true
-//			        repeat: true
-//			        onTriggered: time.text = Date().toString()
-//			    }
 
                 Text {
                     id: time

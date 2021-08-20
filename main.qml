@@ -10,26 +10,10 @@ Window {
     title: qsTr("Hello World")
     property int i: 0
 
-    function newDropDown() {
-        var imgObj = Qt.createComponent( "DropDown.qml" );
-        if ( imgObj.status === Component.Ready ){
-            var k = imgObj.createObject( curr, {text: '123', myId: i++, source: "ItemComboBox.qml"} )
-        }
-    }
-
-    function acceptToAll( command ){
-        for( var g = curr.children.length-1; g >= 0; g-- ){
-            if( curr.children[g].amIStar ){
-                switch ( command ){
-                case 'destroy':
-                    curr.children[g].destroy()
-                    break
-                case 'switchState':
-                    curr.children[g].switchState()
-                    break
-                default:
-                    console.log( 'wrong command' )
-                }
+    function switchState(){
+        for( var i = 0; i < view.count; i++ ){
+            if( view.itemAtIndex(i).amIStar ){
+                 view.itemAtIndex(i).switchState()
             }
         }
     }
@@ -61,7 +45,7 @@ Window {
                     }
                 }
             }
-            onClicked: newDropDown()
+            onClicked: myModel.addData()
         }
 
         Button {
@@ -73,7 +57,7 @@ Window {
             anchors.leftMargin: 5
             text: 'r'
             onClicked: {
-                acceptToAll('destroy')
+                myModel.removeStarredData();
             }
         }
 
@@ -85,7 +69,7 @@ Window {
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: 5
             text: 'h'
-            onClicked: acceptToAll('switchState')
+            onClicked: switchState()
         }
     }
 
@@ -96,29 +80,20 @@ Window {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         spacing: 5
-        Component.onCompleted: {
-            newDropDown()
-
-//          for(var g = 0; g < curr.children.length; g++){
-//                  console.log(curr.children[g].myId)
-//              if( curr.children[g].myId === 1 ){
-//                  console.log(curr.children[g].loader.item)
-//                  curr.children[g].loader.item.tableModel.append({'sensor': 'Fire sensor'})
-//              }
-//          }
-        }
     }
     Item {
         anchors.top: rect.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-       ListView {
-            anchors.fill: parent
-            model: myModel
-            delegate: DropDown {
-                text: "Animal: " + elapsedTime + ' ' + currentTime
-            }
+        ListView {
+            id: view
+             anchors.fill: parent
+             model: myModel
+             delegate: DropDown {
+                 text: elapsedTime
+                 time: currentTime
+             }
         }
     }
 
