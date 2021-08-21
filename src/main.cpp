@@ -9,13 +9,13 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
-    Model m;
-    m.addData();
-    m.addData();
-    m.addData();
+    Model model;
+    model.addData();
+    model.addData();
+    model.addData();
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
 
-    engine.rootContext()->setContextProperty("myModel", &m);
+    engine.rootContext()->setContextProperty("myModel", &model);
 
     engine.load(url);
 

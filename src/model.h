@@ -9,16 +9,17 @@
 #include <QTimer>
 
 struct BigData {
-    QElapsedTimer timer;
+    QElapsedTimer m_timeFromCreation;
     QTime m_elapsedTime;
     QTime m_currentTime;
     bool m_amIStar;
 
-    BigData( const bool _amIStar = false )
+    explicit BigData( const bool _amIStar = false )
     {
         m_elapsedTime = QTime::fromString( "00:00:00" );
+        m_currentTime = QTime::currentTime();
         m_amIStar = _amIStar;
-        timer.start();
+        m_timeFromCreation.start();
     }
     ~BigData() = default;
     QString getElapsedTime() const
@@ -36,29 +37,26 @@ class Model : public QAbstractListModel
     Q_OBJECT
 
     QList<BigData> mData;
-    QTimer *tm;
+    QTimer *m_timer;
 
     enum Roles { CurrentTimeRole = Qt::UserRole + 1, ElapsedTimeRole };
+    void tic_tac();
 
-public:
-    explicit Model( QObject *parent = nullptr );
-    ~Model()
-    {
-        delete tm;
-    };
+protected:
     QHash<int, QByteArray> roleNames() const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     bool removeRows( int row, int count = 1, const QModelIndex &parent = QModelIndex() ) override;
 
-signals:
+
+public:
+    explicit Model( QObject *parent = nullptr );
+    ~Model() { delete m_timer; }
 
 public slots:
     void addData();
-    void changeData( const int &_index );
-    bool changeStar( const int &_index );
-    bool getAmIStar( const int &_index );
-    void tic_tac();
+    bool changeStar( const int &index );
+    bool getAmIStar( const int &index );
     void removeStarredData();
 };
 
